@@ -1,65 +1,183 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
+import { VodFilters } from "@/components/vods/VodFilters";
+import { VodGrid } from "@/components/vods/VodGrid";
+import { VodPagination } from "@/components/vods/VodPagination";
+import { useVodsList } from "@/hooks/useVods";
+import { vodsTotalPages } from "@/lib/vodsPagination";
+import type { FilterType, FilterOptions } from "@/types/vod";
+
+const CHANNEL = process.env.NEXT_PUBLIC_CHANNEL ?? "Quin69";
+
+function parsePageParam(raw: string | null): number {
+  if (raw == null || raw === "") return 1;
+  const n = Number.parseInt(raw, 10);
+  if (!Number.isFinite(n) || n < 1) return 1;
+  return n;
+}
+
+function HomeArchiveBody() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [filter, setFilter]               = useState<FilterType>("Default");
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
+
+  const pageFromUrl = useMemo(
+    () => parsePageParam(searchParams.get("page")),
+    [searchParams],
+  );
+
+  const { vods, total, loading, error, isInitialLoad } = useVodsList(
+    filter,
+    filterOptions,
+    pageFromUrl,
+  );
+
+  const totalPages = vodsTotalPages(total);
+
+  useEffect(() => {
+    if (total > 0 && pageFromUrl > totalPages) {
+      const params = new URLSearchParams(searchParams.toString());
+      if (totalPages <= 1) params.delete("page");
+      else params.set("page", String(totalPages));
+      const q = params.toString();
+      router.replace(q ? `/?${q}` : "/", { scroll: false });
+    }
+  }, [total, totalPages, pageFromUrl, router, searchParams]);
+
+  const navigatePage = useCallback(
+    (next: number) => {
+      const p = Math.max(1, next);
+      const params = new URLSearchParams(searchParams.toString());
+      if (p <= 1) params.delete("page");
+      else params.set("page", String(p));
+      const q = params.toString();
+      router.push(q ? `/?${q}` : "/", { scroll: true });
+    },
+    [router, searchParams],
+  );
+
+  const handleFilterChange = useCallback(
+    (f: FilterType) => {
+      setFilter(f);
+      setFilterOptions({});
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("page");
+      const q = params.toString();
+      router.replace(q ? `/?${q}` : "/", { scroll: false });
+    },
+    [router, searchParams],
+  );
+
+  const handleOptionsChange = useCallback(
+    (opts: FilterOptions) => {
+      setFilterOptions(opts);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("page");
+      const q = params.toString();
+      router.replace(q ? `/?${q}` : "/", { scroll: false });
+    },
+    [router, searchParams],
+  );
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main
+      className="min-h-screen pt-12"
+      style={{ background: "var(--color-bg-base)" }}
+    >
+      <div>
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-8">
+          <div className="mb-6">
+            <h1
+              className="text-2xl font-black tracking-tight mb-1"
+              style={{ color: "var(--color-text-primary)", letterSpacing: "-0.03em" }}
+            >
+              {CHANNEL}
+              <span style={{ color: "var(--color-amber)" }}> /</span>
+              {" "}
+              archive
+            </h1>
+            <p
+              className="text-sm"
+              style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
+            >
+              VOD archive with chat replay · game chapters · timestamp sharing
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 mb-4">
+            <span
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: "var(--color-amber)", fontFamily: "var(--font-mono)" }}
+            >
+              All VODs
+            </span>
+            {total > 0 && (
+              <span
+                className="text-xs"
+                style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
+              >
+                {total.toLocaleString()}
+              </span>
+            )}
+          </div>
+
+          <VodFilters
+            filter={filter}
+            filterOptions={filterOptions}
+            totalVods={total}
+            onFilterChange={handleFilterChange}
+            onOptionsChange={handleOptionsChange}
+          />
+        </div>
+      </div>
+
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
+        <VodGrid
+          vods={vods}
+          loading={loading}
+          isInitialLoad={isInitialLoad}
+          error={error}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        <VodPagination
+          page={pageFromUrl}
+          total={total}
+          loading={loading}
+          onPageChange={navigatePage}
+        />
+      </div>
+    </main>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <>
+      <Navbar />
+      <Suspense fallback={<HomeArchiveSuspenseFallback />}>
+        <HomeArchiveBody />
+      </Suspense>
+    </>
+  );
+}
+
+function HomeArchiveSuspenseFallback() {
+  return (
+    <main
+      className="min-h-screen pt-12"
+      style={{ background: "var(--color-bg-base)" }}
+    >
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-20 flex flex-col items-center gap-4">
+        <div
+          className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
+          style={{ borderColor: "var(--color-amber)", borderTopColor: "transparent" }}
+        />
+        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Loading archive…</p>
+      </div>
+    </main>
   );
 }
