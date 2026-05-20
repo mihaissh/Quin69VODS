@@ -1,8 +1,6 @@
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import duration from "dayjs/plugin/duration";
 
-dayjs.extend(relativeTime);
 dayjs.extend(duration);
 
 // ── Duration helpers ──────────────────────────────────────────────────────────
@@ -45,10 +43,6 @@ export function formatDuration(value: string | number): string {
 
 export function formatDate(date: string): string {
   return dayjs(date).format("MMM D, YYYY");
-}
-
-export function formatRelativeTime(date: string): string {
-  return dayjs(date).fromNow();
 }
 
 // ── Class names ───────────────────────────────────────────────────────────────

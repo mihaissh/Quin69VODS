@@ -1,4 +1,4 @@
-/** CDN bases aligned with quin69VOD `EmoteRenderer.js`. */
+/** CDN bases for third-party and Twitch emote images. */
 export const TWITCH_EMOTE_CDN = "https://static-cdn.jtvnw.net";
 export const FFZ_EMOTE_CDN    = "https://cdn.frankerfacez.com/emote";
 export const BTTV_EMOTE_CDN   = "https://emotes.overpowered.tv/bttv";

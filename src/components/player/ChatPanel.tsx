@@ -34,7 +34,7 @@ export function ChatPanel({ vodId, currentTime, isPlaying }: ChatPanelProps) {
   const { shown, status, simplebarRef, autoScroll, setAutoScroll, handleScroll } =
     useChatReplay(vodId, currentTime, isPlaying, settings.userDelaySec);
 
-  const emotesMap = useEmotesMaps(vodId);
+  const emotesMap = useEmotesMaps();
   const badges    = useBadgeMap();
 
   return (

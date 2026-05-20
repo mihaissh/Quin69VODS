@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-  fetchVodEmotes,
   fetchBTTVGlobal,
   fetchBTTVChannel,
   fetchFFZChannel,
@@ -37,11 +36,8 @@ function fromEmoteList(list: Emote[], maps: EmotesMaps) {
   }
 }
 
-/**
- * Tri-map of third-party emotes (quin69VOD `Chat.js` + `MessageRenderer.js`):
- * lowercase keys, 7TV → FFZ → BTTV resolution order in the renderer.
- */
-export function useEmotesMaps(vodId: string): EmotesMaps {
+/** Loads BTTV, FFZ, and 7TV emotes for chat rendering. */
+export function useEmotesMaps(): EmotesMaps {
   const [maps, setMaps] = useState<EmotesMaps>(() => ({
     "7tv": new Map(),
     bttv: new Map(),
@@ -57,29 +53,6 @@ export function useEmotesMaps(vodId: string): EmotesMaps {
         bttv: new Map(),
         ffz:  new Map(),
       };
-
-      const vodData = await fetchVodEmotes(vodId);
-      if (vodData) {
-        for (const e of vodData.bttv_emotes ?? []) {
-          if (!e.id || !e.code) continue;
-          const row: ThirdPartyEmote = { id: e.id, name: e.code, code: e.code, source: "bttv" };
-          register(next.bttv, e.code, row);
-        }
-        for (const e of vodData.ffz_emotes ?? []) {
-          const idStr = String((e as { id?: number | string }).id ?? e.name);
-          if (!e.name) continue;
-          const row: ThirdPartyEmote = { id: idStr, name: e.name, code: e.name, source: "ffz" };
-          register(next.ffz, e.name, row);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        for (const e of (vodData["7tv_emotes"] as any[]) ?? []) {
-          const code = (e.name ?? e.code ?? "") as string;
-          const id   = (e.id ?? e.data?.id ?? "") as string;
-          if (!code || !id) continue;
-          const row: ThirdPartyEmote = { id, name: code, code, source: "7tv" };
-          register(next["7tv"], code, row);
-        }
-      }
 
       const results = await Promise.allSettled([
         fetchBTTVGlobal(),
@@ -98,7 +71,7 @@ export function useEmotesMaps(vodId: string): EmotesMaps {
 
     load();
     return () => { mounted = false; };
-  }, [vodId]);
+  }, []);
 
   return maps;
 }

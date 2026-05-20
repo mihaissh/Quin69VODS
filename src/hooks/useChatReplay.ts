@@ -9,7 +9,7 @@
  *
  * Why refs for `streamTime` / flags: the parent may update `currentTime` faster than 1 Hz;
  * the replay tick and buffer checks intentionally read the latest value without
- * re-subscribing effects to every clock tick (see quin69VOD Chat.js notes in repo history).
+ * re-subscribing effects to every clock tick.
  */
 
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";

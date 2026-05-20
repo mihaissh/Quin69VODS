@@ -4,7 +4,6 @@ import type {
   VodNeighbor,
   VodsResponse,
   ChatResponse,
-  BadgesPayload,
   Emote,
   FilterType,
   FilterOptions,
@@ -53,8 +52,6 @@ interface RawVod {
   platform?: string;
   chapters?: Vod["chapters"];
   games?: RawVodGame[];
-  youtube?: unknown[];
-  drive?: unknown[];
   thumbnail_url?: string | null;
   prev?: RawVodNeighbor[];
   next?: RawVodNeighbor[];
@@ -108,8 +105,6 @@ function normalizeVod(raw: RawVod): Vod {
     stream_id: raw.platform_stream_id ?? raw.stream_id,
     platform: raw.platform,
     chapters: raw.chapters ?? [],
-    youtube: raw.youtube ?? [],
-    drive: raw.drive ?? [],
     games: (raw.games ?? []).map((game) => normalizeGame(game, id)),
     prev: raw.prev?.map(normalizeNeighbor),
     next: raw.next?.map(normalizeNeighbor),
@@ -217,38 +212,6 @@ export async function fetchChatByCursor(
     comments: data.comments ?? [],
     cursor: data.cursor,
   };
-}
-
-// ── Badges — /v2/badges ───────────────────────────────────────────────────────
-
-export async function fetchBadges(): Promise<BadgesPayload | null> {
-  try {
-    const res = await fetch(`${VODS_API_BASE}/v2/badges`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data?.error) return null;
-    return data as BadgesPayload;
-  } catch {
-    return null;
-  }
-}
-
-// ── VOD emotes — /emotes?vod_id= ─────────────────────────────────────────────
-
-export async function fetchVodEmotes(vodId: string): Promise<{
-  ffz_emotes: RawFFZEmote[];
-  bttv_emotes: RawBTTVEmote[];
-  "7tv_emotes": RawSevenTVEmote[];
-} | null> {
-  try {
-    const res = await fetch(`${VODS_API_BASE}/emotes?vod_id=${vodId}`);
-    if (!res.ok) return null;
-    const json = await res.json();
-    if (!json?.data?.length) return null;
-    return json.data[0];
-  } catch {
-    return null;
-  }
 }
 
 // ── Third-party emote APIs ────────────────────────────────────────────────────

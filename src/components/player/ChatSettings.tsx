@@ -121,7 +121,7 @@ export function ChatSettings({ onClose, value, onSave }: ChatSettingsProps) {
             />
           </label>
           <p id={DELAY_HINT_ID} className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-            Fix desync between video and chat (same as quin69VOD). Range 0–{MAX_DELAY_SEC} seconds.
+            Fix desync between video and chat. Range 0–{MAX_DELAY_SEC} seconds.
           </p>
 
           <label className="flex items-center gap-2 cursor-pointer text-sm" style={{ color: "var(--color-text-primary)" }}>

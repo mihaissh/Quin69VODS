@@ -1,14 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { fetchBadges } from "@/lib/api";
 import type { BadgesPayload, BadgeSet, BadgeVersion } from "@/types/vod";
 
-/** Fetches global + channel badge sets once on mount. */
+/** Badge metadata is not loaded from the archive API; helpers stay for chat payloads. */
 export function useBadgeMap(): BadgesPayload | null {
-  const [badges, setBadges] = useState<BadgesPayload | null>(null);
-  useEffect(() => { fetchBadges().then(setBadges); }, []);
-  return badges;
+  return null;
 }
 
 function findBadgeVersion(
@@ -22,7 +18,6 @@ function findBadgeVersion(
   return pick(badges.channel) ?? pick(badges.global);
 }
 
-/** Resolves a badge image URL from set ID + version string. */
 export function getBadgeUrl(
   badges: BadgesPayload | null,
   setId: string,
@@ -31,7 +26,6 @@ export function getBadgeUrl(
   return findBadgeVersion(badges, setId, version)?.image_url_2x ?? null;
 }
 
-/** Full version row for srcSet / tooltips (quin69VOD BadgeRenderer). */
 export function getBadgeVersion(
   badges: BadgesPayload | null,
   setId: string,

@@ -12,8 +12,6 @@ export interface VodChapter {
 
 /**
  * A video clip attached to a VOD (game segment uploaded to YouTube, etc.)
- * The `youtube` and `drive` arrays on a Vod are always empty — actual video
- * content lives here.
  */
 export interface VodGame {
   id: string;
@@ -42,11 +40,6 @@ export interface Vod {
   stream_id?: string;
   platform?: string;
   chapters: VodChapter[];
-  /** Always empty on this API — use `games` instead */
-  youtube: unknown[];
-  /** Always empty on this API — use `games` instead */
-  drive: unknown[];
-  /** The actual playable video segments */
   games: VodGame[];
   /** Newer adjacent streams (from single-VOD API). */
   prev?: VodNeighbor[];
@@ -88,7 +81,6 @@ export interface ChatFragment {
 
 export interface UserBadge {
   id?: string;
-  /** Some payloads use `_id` for the badge set (quin69VOD). */
   _id?: string;
   setID?: string;
   version?: string;
@@ -122,7 +114,7 @@ export interface ChatResponse {
   cursor?: string;
 }
 
-// ── Badges from /v2/badges ────────────────────────────────────────────────────
+// ── Badges ────────────────────────────────────────────────────────────────────
 
 export interface BadgeVersion {
   id: string;
@@ -149,7 +141,7 @@ export interface Emote {
   source?: "bttv" | "ffz" | "7tv";
 }
 
-/** Raw emote object for CDN URLs (matches quin69VOD tri-map + EmoteRenderer pattern). */
+/** Third-party emote entry used by the chat renderer. */
 export interface ThirdPartyEmote {
   id:   string;
   name: string;

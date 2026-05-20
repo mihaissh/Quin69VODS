@@ -89,8 +89,6 @@ export function VodSegmentPlaylist({
   const hasNav = Boolean(olderVod || newerVod);
   const hasParts = games.length > 1;
 
-  if (!hasNav && games.length === 0) return null;
-
   function setVisible(next: boolean) {
     onVisibleChange?.(next);
     if (visibleProp === undefined) setVisibleInternal(next);
@@ -104,6 +102,8 @@ export function VodSegmentPlaylist({
       block: "nearest",
     });
   }, [activeIndex, visible, hasParts]);
+
+  if (!hasNav && games.length === 0) return null;
 
   return (
     <div
