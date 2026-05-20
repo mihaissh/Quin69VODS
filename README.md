@@ -17,10 +17,11 @@ Live repo: [github.com/mihaissh/Quin69VODS](https://github.com/mihaissh/Quin69VO
 ## Quick start
 
 ```bash
-cp .env.local.example .env.local
 npm install
 npm run dev
 ```
+
+Create `.env.local` with the variables below (Vercel uses the same names).
 
 ## Environment variables
 
@@ -29,7 +30,6 @@ npm run dev
 | `NEXT_PUBLIC_VODS_API_BASE` | VODs API base (`https://archive.overpowered.tv/api/v1/quin69`) |
 | `NEXT_PUBLIC_CHANNEL` | Twitch channel name |
 | `NEXT_PUBLIC_TWITCH_ID` | Twitch user ID for emotes |
-| `NEXT_PUBLIC_DEFAULT_DELAY` | Default chat delay in seconds |
 
 ## Routes
 
