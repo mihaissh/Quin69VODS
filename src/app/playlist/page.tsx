@@ -2,12 +2,10 @@
 
 import { lazy, Suspense } from "react";
 
-import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Header } from "@/components/Header";
 import { NowPlaying } from "@/components/NowPlaying";
 import { Reveal } from "@/components/Reveal";
 import { Footer } from "@/components/Footer";
-import { FloatingEmotes } from "@/components/clown-theme";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useAlbumArt } from "@/hooks/useAlbumArt";
 import { usePlaylist } from "@/hooks/usePlaylist";
@@ -35,8 +33,6 @@ function PlaylistDashboard() {
       className="min-h-screen pt-12 flex flex-col overflow-hidden relative animate-fade-in"
       style={{ background: "var(--color-bg-base)" }}
     >
-      {/* Waterfall emotes */}
-      <FloatingEmotes />
 
       {/* Header Container (Wide, matching VODs page header alignment) */}
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 pt-8 relative z-10">
@@ -100,8 +96,6 @@ function PlaylistDashboard() {
 
 export default function PlaylistPage() {
   return (
-    <ThemeProvider>
-      <PlaylistDashboard />
-    </ThemeProvider>
+    <PlaylistDashboard />
   );
 }
