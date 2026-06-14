@@ -93,12 +93,12 @@ export default function Navbar() {
         </span>
 
         {/* Nav */}
-        <nav className="hidden sm:flex items-center gap-0.5">
+        <nav className="hidden sm:flex items-center gap-2">
           <NavLink href="/" active={pathname === "/" || pathname.startsWith("/vods") || pathname === "/vods"}>
             VODs
           </NavLink>
           <NavLink href="/playlist" active={pathname === "/playlist"}>
-            Playlist
+            Playlist Tracker
           </NavLink>
         </nav>
 
@@ -159,11 +159,13 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
   return (
     <Link
       href={href}
-      className="px-3 py-1 rounded text-sm transition-colors duration-100"
-      style={{
-        color: active ? "var(--color-amber)" : "var(--color-text-muted)",
-        fontWeight: active ? 600 : 400,
-      }}
+      className={`
+        px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 border
+        ${active 
+          ? 'bg-[var(--color-amber-dim)] border-[var(--color-amber-line)] text-[var(--color-amber)]' 
+          : 'bg-transparent border-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)]'
+        }
+      `}
     >
       {children}
     </Link>

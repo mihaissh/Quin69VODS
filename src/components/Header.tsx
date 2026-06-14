@@ -19,7 +19,7 @@ export function Header(_props: HeaderProps) {
               Quin69
               <span style={{ color: "var(--color-amber)" }}> /</span>
               {" "}
-              playlist
+              playlist tracker
             </h1>
             <p
               className="text-sm"
