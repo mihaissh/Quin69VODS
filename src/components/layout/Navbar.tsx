@@ -14,7 +14,7 @@ function useTwitchStatus(): LiveStatus {
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await fetch(`https://decapi.me/twitch/viewercount/${CHANNEL.toLowerCase()}`);
+        const res = await fetch('/api/twitch/viewercount');
         const text = await res.text();
         const n = parseInt(text, 10);
         setStatus({ isLive: !isNaN(n) && n > 0, viewers: isNaN(n) ? undefined : n });
@@ -96,6 +96,9 @@ export default function Navbar() {
         <nav className="hidden sm:flex items-center gap-0.5">
           <NavLink href="/" active={pathname === "/" || pathname.startsWith("/vods") || pathname === "/vods"}>
             VODs
+          </NavLink>
+          <NavLink href="/playlist" active={pathname === "/playlist"}>
+            Playlist
           </NavLink>
         </nav>
 

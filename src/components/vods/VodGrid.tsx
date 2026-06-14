@@ -76,8 +76,8 @@ export function VodGrid({
           />
         </div>
       )}
-      {vods.map((vod) => (
-        <VodCard key={vod.id} vod={vod} />
+      {vods.map((vod, index) => (
+        <VodCard key={vod.id} vod={vod} index={index} />
       ))}
     </div>
   );

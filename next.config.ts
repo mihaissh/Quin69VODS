@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.frankerfacez.com" },
       { protocol: "https", hostname: "static.twitchcdn.net" },
       { protocol: "https", hostname: "*.7tv.io" },
+      { protocol: "https", hostname: "*.mzstatic.com" },
     ],
   },
   // Allow YouTube embeds

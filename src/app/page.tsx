@@ -1,174 +1,83 @@
-"use client";
+import { Suspense } from "react";
+import { fetchVods } from "@/lib/api";
+import { VODS_PAGE_SIZE } from "@/lib/vodsPagination";
+import { HomeArchiveClient } from "@/components/vods/HomeArchiveClient";
+import type { FilterType, FilterOptions, Vod } from "@/types/vod";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Navbar from "@/components/layout/Navbar";
-import { VodFilters } from "@/components/vods/VodFilters";
-import { VodGrid } from "@/components/vods/VodGrid";
-import { VodPagination } from "@/components/vods/VodPagination";
-import { useVodsList } from "@/hooks/useVods";
-import { vodsTotalPages } from "@/lib/vodsPagination";
-import type { FilterType, FilterOptions } from "@/types/vod";
+interface PageProps {
+  searchParams: Promise<{
+    page?: string;
+    type?: string;
+    title?: string;
+    game?: string;
+    from?: string;
+    to?: string;
+  }>;
+}
 
-const CHANNEL = process.env.NEXT_PUBLIC_CHANNEL ?? "Quin69";
-
-function parsePageParam(raw: string | null): number {
+function parsePageParam(raw: string | null | undefined): number {
   if (raw == null || raw === "") return 1;
   const n = Number.parseInt(raw, 10);
   if (!Number.isFinite(n) || n < 1) return 1;
   return n;
 }
 
-function HomeArchiveBody() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+async function HomeArchiveServer({ searchParams }: { searchParams: PageProps["searchParams"] }) {
+  const params = await searchParams;
+  const page = parsePageParam(params.page);
+  const filter = (params.type as FilterType) || "Default";
 
-  const [filter, setFilter]               = useState<FilterType>("Default");
-  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
+  const filterOptions: FilterOptions = {};
+  if (filter === "Title" && typeof params.title === "string") {
+    filterOptions.title = params.title;
+  } else if (filter === "Game" && typeof params.game === "string") {
+    filterOptions.game = params.game;
+  } else if (filter === "Date" && typeof params.from === "string" && typeof params.to === "string") {
+    filterOptions.startDate = new Date(params.from);
+    filterOptions.endDate = new Date(params.to + "T23:59:59");
+  }
 
-  const pageFromUrl = useMemo(
-    () => parsePageParam(searchParams.get("page")),
-    [searchParams],
-  );
+  let vods: Vod[] = [];
+  let total = 0;
+  let errorMessage: string | null = null;
 
-  const { vods, total, loading, error, isInitialLoad } = useVodsList(
-    filter,
-    filterOptions,
-    pageFromUrl,
-  );
-
-  const totalPages = vodsTotalPages(total);
-
-  useEffect(() => {
-    if (total > 0 && pageFromUrl > totalPages) {
-      const params = new URLSearchParams(searchParams.toString());
-      if (totalPages <= 1) params.delete("page");
-      else params.set("page", String(totalPages));
-      const q = params.toString();
-      router.replace(q ? `/?${q}` : "/", { scroll: false });
-    }
-  }, [total, totalPages, pageFromUrl, router, searchParams]);
-
-  const navigatePage = useCallback(
-    (next: number) => {
-      const p = Math.max(1, next);
-      const params = new URLSearchParams(searchParams.toString());
-      if (p <= 1) params.delete("page");
-      else params.set("page", String(p));
-      const q = params.toString();
-      router.push(q ? `/?${q}` : "/", { scroll: true });
-    },
-    [router, searchParams],
-  );
-
-  const handleFilterChange = useCallback(
-    (f: FilterType) => {
-      setFilter(f);
-      setFilterOptions({});
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("page");
-      const q = params.toString();
-      router.replace(q ? `/?${q}` : "/", { scroll: false });
-    },
-    [router, searchParams],
-  );
-
-  const handleOptionsChange = useCallback(
-    (opts: FilterOptions) => {
-      setFilterOptions(opts);
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("page");
-      const q = params.toString();
-      router.replace(q ? `/?${q}` : "/", { scroll: false });
-    },
-    [router, searchParams],
-  );
+  try {
+    const res = await fetchVods({
+      filter,
+      filterOptions,
+      page,
+      limit: VODS_PAGE_SIZE,
+    });
+    vods = res.data;
+    total = res.total;
+  } catch (err) {
+    errorMessage = err instanceof Error ? err.message : "Failed to load VODs";
+  }
 
   return (
-    <main
-      className="min-h-screen pt-12"
-      style={{ background: "var(--color-bg-base)" }}
-    >
-      <div>
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-8">
-          <div className="mb-6">
-            <h1
-              className="text-2xl font-black tracking-tight mb-1"
-              style={{ color: "var(--color-text-primary)", letterSpacing: "-0.03em" }}
-            >
-              {CHANNEL}
-              <span style={{ color: "var(--color-amber)" }}> /</span>
-              {" "}
-              archive
-            </h1>
-            <p
-              className="text-sm"
-              style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
-            >
-              VOD archive with chat replay · game chapters · timestamp sharing
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 mb-4">
-            <span
-              className="text-xs font-bold uppercase tracking-widest"
-              style={{ color: "var(--color-amber)", fontFamily: "var(--font-mono)" }}
-            >
-              All VODs
-            </span>
-            {total > 0 && (
-              <span
-                className="text-xs"
-                style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-mono)" }}
-              >
-                {total.toLocaleString()}
-              </span>
-            )}
-          </div>
-
-          <VodFilters
-            filter={filter}
-            filterOptions={filterOptions}
-            totalVods={total}
-            onFilterChange={handleFilterChange}
-            onOptionsChange={handleOptionsChange}
-          />
-        </div>
-      </div>
-
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
-        <VodGrid
-          vods={vods}
-          loading={loading}
-          isInitialLoad={isInitialLoad}
-          error={error}
-        />
-        <VodPagination
-          page={pageFromUrl}
-          total={total}
-          loading={loading}
-          onPageChange={navigatePage}
-        />
-      </div>
-    </main>
+    <HomeArchiveClient
+      initialVods={vods}
+      initialTotal={total}
+      initialError={errorMessage}
+      page={page}
+      filter={filter}
+      filterOptions={filterOptions}
+    />
   );
 }
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: PageProps) {
   return (
-    <>
-      <Navbar />
-      <Suspense fallback={<HomeArchiveSuspenseFallback />}>
-        <HomeArchiveBody />
-      </Suspense>
-    </>
+    <Suspense fallback={<HomeArchiveSuspenseFallback />}>
+      <HomeArchiveServer searchParams={searchParams} />
+    </Suspense>
   );
 }
 
 function HomeArchiveSuspenseFallback() {
   return (
     <main
-      className="min-h-screen pt-12"
+      className="min-h-screen pt-12 animate-pulse"
       style={{ background: "var(--color-bg-base)" }}
     >
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-20 flex flex-col items-center gap-4">

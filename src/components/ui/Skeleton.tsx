@@ -6,7 +6,7 @@ export function VodCardSkeleton() {
   return (
     <div
       className="rounded-lg overflow-hidden"
-      style={{ background: "var(--color-bg-surface)", border: "1px solid var(--color-border)" }}
+      style={{ background: "var(--color-bg-surface)" }}
     >
       <Skeleton style={{ aspectRatio: "16/9", borderRadius: 0 }} />
       <div className="px-3 pt-2.5 pb-3 flex flex-col gap-2">

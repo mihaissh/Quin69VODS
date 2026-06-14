@@ -9,9 +9,10 @@ import type { Vod } from "@/types/vod";
 
 interface VodCardProps {
   vod: Vod;
+  index?: number;
 }
 
-export function VodCard({ vod }: VodCardProps) {
+export function VodCard({ vod, index }: VodCardProps) {
   const [imgError, setImgError] = useState(false);
 
   const firstGame     = vod.games?.[0];
@@ -39,11 +40,11 @@ export function VodCard({ vod }: VodCardProps) {
             src={thumbnail}
             alt={vod.title}
             fill
-            unoptimized
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
             onError={() => setImgError(true)}
-            loading="lazy"
+            priority={index !== undefined && index < 8}
+            loading={index !== undefined && index < 8 ? undefined : "lazy"}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
