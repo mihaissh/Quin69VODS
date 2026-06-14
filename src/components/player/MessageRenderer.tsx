@@ -29,7 +29,6 @@ const TwitchEmoteImg = memo(function TwitchEmoteImg({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      crossOrigin="anonymous"
       src={`${base}/1.0`}
       srcSet={`${base}/1.0 1x, ${base}/2.0 2x, ${base}/3.0 4x`}
       alt={label}
@@ -48,7 +47,6 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        crossOrigin="anonymous"
         src={`${base}/1x.webp`}
         srcSet={`${base}/1x.webp 1x, ${base}/2x.webp 2x, ${base}/3x.webp 3x, ${base}/4x.webp 4x`}
         alt={label}
@@ -64,7 +62,6 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        crossOrigin="anonymous"
         loading="lazy"
         decoding="async"
         src={`${base}/1`}
@@ -81,7 +78,6 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      crossOrigin="anonymous"
       loading="lazy"
       decoding="async"
       src={`${base}/1x`}

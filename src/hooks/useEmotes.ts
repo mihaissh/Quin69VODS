@@ -10,7 +10,7 @@ import {
 } from "@/lib/api";
 import type { Emote, EmotesMaps, ThirdPartyEmote } from "@/types/vod";
 
-const TWITCH_ID = process.env.NEXT_PUBLIC_TWITCH_ID ?? "";
+const TWITCH_ID = process.env.NEXT_PUBLIC_TWITCH_ID || "56649026";
 
 function register(map: Map<string, ThirdPartyEmote>, key: string, emote: ThirdPartyEmote) {
   if (!key) return;
