@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+model Vod {
+  id           String   @id // YouTube Video ID
+  title        String
+  createdAt    DateTime
+  duration     String
+  thumbnailUrl String?
+  games        Game[]
+}
+
+model Game {
+  id            String   @id @default(uuid())
+  vodId         String
+  vod           Vod      @relation(fields: [vodId], references: [id], onDelete: Cascade)
+  title         String
+  gameName      String
+  startTime     String
+  endTime       String
+  videoId       String
+  videoProvider String
+}

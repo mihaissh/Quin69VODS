@@ -33,6 +33,7 @@ export const ChatMessage = memo(function ChatMessage({
     const v = getBadgeVersion(badges, setId, ver);
     if (!v) return [];
     return [
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         key={`${setId}-${ver}-${i}`}
         crossOrigin="anonymous"

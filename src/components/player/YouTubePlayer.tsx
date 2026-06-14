@@ -30,8 +30,11 @@ export function YouTubePlayer({
     if (intervalRef.current) return;
     intervalRef.current = setInterval(() => {
       try {
-        const t = playerRef.current?.getCurrentTime?.();
-        if (typeof t === "number") onTimeUpdate?.(t);
+        const iframe = playerRef.current?.getIframe?.();
+        if (iframe && document.body.contains(iframe)) {
+          const t = playerRef.current?.getCurrentTime?.();
+          if (typeof t === "number") onTimeUpdate?.(t);
+        }
       } catch { /* not ready */ }
     }, 500);
   }, [onTimeUpdate]);

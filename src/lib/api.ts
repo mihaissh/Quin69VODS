@@ -158,7 +158,9 @@ export async function fetchVods({
     throw new Error(json.message ?? `Failed to fetch VODs: ${res.statusText}`);
   }
 
-  const data = (json.data ?? []).map(normalizeVod);
+  const data = (json.data ?? [])
+    .map(normalizeVod)
+    .filter((vod) => (vod.games?.length ?? 0) > 0);
   const meta = json.meta ?? {};
 
   return {

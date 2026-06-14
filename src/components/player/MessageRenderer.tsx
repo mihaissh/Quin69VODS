@@ -27,6 +27,7 @@ const TwitchEmoteImg = memo(function TwitchEmoteImg({
 }) {
   const base = `${TWITCH_EMOTE_CDN}/emoticons/v2/${emoteId}/default/dark`;
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       crossOrigin="anonymous"
       src={`${base}/1.0`}
@@ -45,6 +46,7 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
   if (emote.source === "7tv") {
     const base = `${SEVEN_TV_CDN}/${emote.id}`;
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         crossOrigin="anonymous"
         src={`${base}/1x.webp`}
@@ -60,6 +62,7 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
   if (emote.source === "ffz") {
     const base = `${FFZ_EMOTE_CDN}/${emote.id}`;
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         crossOrigin="anonymous"
         loading="lazy"
@@ -76,6 +79,7 @@ const ThirdPartyEmoteImg = memo(function ThirdPartyEmoteImg({ emote }: { emote: 
   }
   const base = `${BTTV_EMOTE_CDN}/${emote.id}`;
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       crossOrigin="anonymous"
       loading="lazy"
