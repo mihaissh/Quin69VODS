@@ -36,7 +36,6 @@ export const ChatMessage = memo(function ChatMessage({
       // eslint-disable-next-line @next/next/no-img-element
       <img
         key={`${setId}-${ver}-${i}`}
-        crossOrigin="anonymous"
         loading="lazy"
         decoding="async"
         src={v.image_url_1x}
