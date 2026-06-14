@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Playlist",
+  title: "Playlist Tracker",
   description: "Check what song Quin69 is playing on Spotify in real-time, view playlist request history, and search request list.",
 };
 
