@@ -4,13 +4,13 @@
  * Footer component
  */
 
-import { ComponentEmote } from './clown-theme';
+
 
 export function Footer() {
 
   return (
     <footer className="mt-6 pt-6 text-center space-y-2 animate-fade-in delay-300 relative">
-      <ComponentEmote position="bottom-right" size={48} />
+
       <p className="text-xs text-zinc-600">
         Updates every 15s
       </p>

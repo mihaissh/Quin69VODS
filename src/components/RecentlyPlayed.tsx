@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { SpotifyIcon, YouTubeIcon, ExternalLinkIcon } from './icons';
-import { ComponentEmote } from './clown-theme';
+
 import { CopyButton } from './shared';
 import { ClockIcon, ChevronDownIcon } from './shared/icons';
 import { formatTimestamp } from '@/utils/timestamp';
@@ -22,7 +22,7 @@ export function RecentlyPlayed({ historySongs }: RecentlyPlayedProps) {
         borderColor: 'var(--color-border)',
       }}
     >
-      <ComponentEmote position="bottom-left" size={56} />
+
       <div
         className="px-5 py-3 border-b"
         style={{

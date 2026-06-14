@@ -2,7 +2,7 @@
 
 import { Reveal } from '@/components/Reveal';
 import { AudioVisualizer } from '@/components/AudioVisualizer';
-import { ComponentEmote } from '@/components/clown-theme';
+
 import { CardHeader, LoadingState, NoSongState, OfflineState, PlayingState } from './';
 import type { NowPlayingProps } from '@/types/music';
 
@@ -45,7 +45,7 @@ export function NowPlaying({
           borderColor: "var(--color-amber-line)",
         }}
       >
-        <ComponentEmote position="bottom-right" size={56} />
+
         <CardHeader className="relative z-20" />
 
         {/* Visualizer as background - starts below header */}
